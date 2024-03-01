@@ -4,4 +4,6 @@
 .draggable-canvas:hover
 {
     cursor: move ;
+}.zoomInAndOut:hover {
+    cursor: pointer;
 }
