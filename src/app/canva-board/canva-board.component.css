@@ -1,0 +1,7 @@
+.draggable-canvas {
+    position: relative;
+}
+.draggable-canvas:hover
+{
+    cursor: move ;
+}

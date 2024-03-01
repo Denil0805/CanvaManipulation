@@ -1,5 +1,4 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-
 @Component({
   selector: 'app-canva-board',
   templateUrl: './canva-board.component.html',
