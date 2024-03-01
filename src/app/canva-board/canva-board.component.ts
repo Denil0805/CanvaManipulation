@@ -9,11 +9,23 @@ export class CanvaBoardComponent {
 
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   private context!: CanvasRenderingContext2D | null;
+  private titlePositionX: number = 250;
+  private titlePositionY: number = 65;
+  private subTitlePositionX: number = 250;
+  private subTitlePositionY: number = 120;
+  private staticTitle: string = "Page Title";
+  private staticSubTitle: string = "Page Sub Title";
+  private username: string = "";
+  private designation: string = "";
   private img: HTMLImageElement = new Image();
   private scale = 1.0;
   private minScale = 0.2;
   private maxScale = 2.0;
   private zoomSpeed = 0.1;
+
+  selectedFont: string = "serif"; // Default font
+ 
+  fonts: string[] = ['Arial', 'Times New Roman', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'];
   ngAfterViewInit() {
     this.context = this.canvas.nativeElement.getContext("2d");
     this.setupCanvas();
@@ -50,15 +62,14 @@ export class CanvaBoardComponent {
   }
 
   setHeaderLayout() {
-    // let context = this.canvas.nativeElement.getContext("2d");
-
-    this.createBox(this.context, 10, 10, 150, 150);
-    this.setText("Page Title", 250, 65,40);
-    this.setText("Page Sub Title", 250, 120,30);
-    
+    // Draw initial layout
+    this.createBox(10, 10, 150, 150);
+    this.setText(this.username || this.staticTitle, this.titlePositionX, this.titlePositionY, 20);
+    this.setText(this.designation || this.staticSubTitle, this.subTitlePositionX, this.subTitlePositionY, 20);
   }
+ 
 
-  createBox(context1: any, x: number, y: number, width: number, height: number) {
+  createBox(x: number, y: number, width: number, height: number) {
     this.context?.rect(x, y, width, height);
     this.context?.stroke();
     this.img.src = "https://images.unsplash.com/photo-1600647993560-11a92e039466?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTB8fHxlbnwwfHx8fHw%3D";
@@ -84,7 +95,18 @@ export class CanvaBoardComponent {
   }
 
   setText(textValue: string, x: number, y: number, size: number) {
-    this.context!.font = `${size}px serif`;
+    this.context!.font = `${size}px ${this.selectedFont}`;
     this.context?.fillText(textValue, x, y);
+  }
+
+  updateCanvas() {
+    // Clear canvas
+    this.context?.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+   
+    // Get form input values
+    this.username = (document.getElementById('username') as HTMLInputElement).value;
+    this.designation = (document.getElementById('designation') as HTMLInputElement).value;
+ 
+    this.setHeaderLayout();
   }
 }
