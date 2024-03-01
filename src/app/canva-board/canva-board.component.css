@@ -1,3 +1,9 @@
-.zoomInAndOut:hover {
+.draggable-canvas {
+    position: relative;
+}
+.draggable-canvas:hover
+{
+    cursor: move ;
+}.zoomInAndOut:hover {
     cursor: pointer;
 }
