@@ -9,6 +9,11 @@ export class CanvaBoardComponent {
 
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   private context!: CanvasRenderingContext2D | null;
+  private img: HTMLImageElement = new Image();
+  private scale = 1.0;
+  private minScale = 0.2;
+  private maxScale = 2.0;
+  private zoomSpeed = 0.1;
   ngAfterViewInit() {
     this.context = this.canvas.nativeElement.getContext("2d");
     this.setupCanvas();
@@ -54,10 +59,14 @@ export class CanvaBoardComponent {
   }
 
   createBox(context1: any, x: number, y: number, width: number, height: number) {
-    let context = this.canvas.nativeElement.getContext("2d");
+    this.context?.rect(x, y, width, height);
+    this.context?.stroke();
+    this.img.src = "https://images.unsplash.com/photo-1600647993560-11a92e039466?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTB8fHxlbnwwfHx8fHw%3D";
 
-    context?.rect(x, y, width, height);
-    context?.stroke();
+    // Wait for the image to be fully loaded
+    this.img.onload = () => {
+      this.context?.drawImage(this.img, 10, 10, width, height);
+    };
   }
 
   createLine(context: any, x1: number, y1: number, x2: number, y2: number) {
@@ -78,5 +87,4 @@ export class CanvaBoardComponent {
     this.context!.font = `${size}px serif`;
     this.context?.fillText(textValue, x, y);
   }
-
 }
