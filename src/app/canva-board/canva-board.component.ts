@@ -13,8 +13,8 @@ export class CanvaBoardComponent {
   private titlePositionY: number = 65;
   private subTitlePositionX: number = 250;
   private subTitlePositionY: number = 120;
-  private staticTitle: string = "Page Title";
-  private staticSubTitle: string = "Page Sub Title";
+  private staticTitle: string = "Username";
+  private staticSubTitle: string = "Designation";
   private username: string = "";
   private designation: string = "";
   private img: HTMLImageElement = new Image();
