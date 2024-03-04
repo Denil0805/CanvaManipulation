@@ -4,23 +4,34 @@
 /* For WebKit Browsers (Chrome, Safari) */
 
 
-::-webkit-scrollbar {
-    width: 5px;
-}
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
 
-::-webkit-scrollbar-thumb {
-    background-color: #888; /* Color of the thumb */
-    border-radius: 6px;
-}
+    ::-webkit-scrollbar-thumb {
+        background-color: #888; /* Color of the thumb */
+        border-radius: 6px;
+    }
 
-/* For Firefox */
-/* Note: Firefox supports the scrollbar-width property as of version 64 */
-/* For older versions, you may need to use the -moz-scrollbar property */
-.scrollbar {
-    scrollbar-width: thin;
-}
+    /* For Firefox */
+    /* Note: Firefox supports the scrollbar-width property as of version 64 */
+    /* For older versions, you may need to use the -moz-scrollbar property */
+    .scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #888 transparent; 
+    }
 
-.scrollbar-thumb {
-    background-color: #888; /* Color of the thumb */
-    border-radius: 6px;
-}
+    .scrollbar-thumb {
+        background-color: #888; /* Color of the thumb */
+        border-radius: 6px;
+    }
+
+    .ms-scrollbar {
+        width: 5px;
+        scrollbar-color: #888 transparent; /* Color of the thumb and track */
+    }
+    
+    .ms-scrollbar-thumb {
+        background-color: #888; /* Color of the thumb */
+    }
