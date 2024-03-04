@@ -8,14 +8,8 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 export class CanvaBoardComponent {
 
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('zoomContainer', { static: true }) zoomContainerRef!: ElementRef;
   private context!: CanvasRenderingContext2D | null;
-  img: HTMLImageElement = new Image();
-  canvasWidth: number = 0;
-  canvasHeight: number = 0;
-  zoomFactor = 1;
-  selectedFont: string = "serif";
-  fonts: string[] = ['Arial', 'Times New Roman', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'];
-
   titlePositionX: number = 250;
   titlePositionY: number = 65;
   subTitlePositionX: number = 250;
@@ -24,7 +18,18 @@ export class CanvaBoardComponent {
   staticSubTitle: string = "Designation";
   username: string = "";
   designation: string = "";
-
+  img: HTMLImageElement = new Image();
+  canvasWidth: number = 0;
+  canvasHeight: number = 0;
+  minScale: number = 0.8;
+  maxScale: number = 3.0;
+  scale: number = 1.0;
+  zoomFactor: number = 1;
+  minZoomFactor: number = 0.2;
+  maxZoomFactor: number = 2.0;
+  zoomSpeed: number = 0.1;
+  selectedFont: string = "serif";
+  fonts: string[] = ['Arial', 'Times New Roman', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'];
   ngAfterViewInit() {
     this.context = this.canvas.nativeElement.getContext("2d");
     this.setupCanvas();
@@ -116,16 +121,29 @@ export class CanvaBoardComponent {
   zoomIn() {
     this.zoomFactor *= 1.2;
     this.applyZoom();
+    this.limitZoom();
   }
 
   zoomOut() {
     this.zoomFactor /= 1.2;
     this.applyZoom();
+    this.limitZoom();
   }
 
   applyZoom() {
-    const canvas: HTMLCanvasElement = this.canvas.nativeElement;
-    canvas.style.transform = `scale(${this.zoomFactor})`;
+    this.canvas.nativeElement.style.transform = `scale(${this.zoomFactor})`;
+  }
+  handleZoom(event: WheelEvent) {
+    const delta = event.deltaY || event.detail || 0;
+    if (delta > 0) {
+      this.zoomOut();
+    } else {
+      this.zoomIn();
+    }
+    event.preventDefault();
+  }
+  limitZoom() {
+    this.zoomFactor = Math.max(this.minZoomFactor, Math.min(this.maxZoomFactor, this.zoomFactor));
   }
   handleImageUpload(event: any) {
     const file = event.target.files[0];
