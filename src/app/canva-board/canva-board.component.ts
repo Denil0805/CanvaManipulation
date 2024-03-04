@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-canva-board',
@@ -8,6 +8,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 export class CanvaBoardComponent {
 
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('zoomContainer', { static: true }) zoomContainerRef!: ElementRef;
   private context!: CanvasRenderingContext2D | null;
   titlePositionX: number = 250;
   titlePositionY: number = 65;
@@ -23,7 +24,10 @@ export class CanvaBoardComponent {
   minScale: number = 0.8;
   maxScale: number = 3.0;
   scale: number = 1.0;
-  zoomFactor = 1;
+  zoomFactor: number = 1;
+  minZoomFactor: number = 0.2;
+  maxZoomFactor: number = 2.0;
+  zoomSpeed: number = 0.1;
   selectedFont: string = "serif";
   fonts: string[] = ['Arial', 'Times New Roman', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'];
   ngAfterViewInit() {
@@ -107,16 +111,29 @@ export class CanvaBoardComponent {
   zoomIn() {
     this.zoomFactor *= 1.2;
     this.applyZoom();
+    this.limitZoom();
   }
-  
+
   zoomOut() {
     this.zoomFactor /= 1.2;
     this.applyZoom();
+    this.limitZoom();
   }
-  
+
   applyZoom() {
-    const canvas: HTMLCanvasElement = this.canvas.nativeElement;
-    canvas.style.transform = `scale(${this.zoomFactor})`;
+    this.canvas.nativeElement.style.transform = `scale(${this.zoomFactor})`;
+  }
+  handleZoom(event: WheelEvent) {
+    const delta = event.deltaY || event.detail || 0;
+    if (delta > 0) {
+      this.zoomOut();
+    } else {
+      this.zoomIn();
+    }
+    event.preventDefault();
+  }
+  limitZoom() {
+    this.zoomFactor = Math.max(this.minZoomFactor, Math.min(this.maxZoomFactor, this.zoomFactor));
   }
   
 }
