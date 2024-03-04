@@ -31,12 +31,18 @@
           <option *ngFor="let font of fonts" [value]="font">{{ font }}</option>
         </select>
         <label for="imageUpload" class="form-label mt-2">Upload Image:</label>
+        <button type="button" class="form-control btn btn-success" onclick="document.getElementById('imageUpload').click()">Choose Image</button>
         <input
           type="file"
           id="imageUpload"
+          accept=".svg"
           class="form-control"
+          style="display: none;"
           (change)="handleImageUpload($event)"
         />
+        <p>{{ uploadedImageName }}</p>
+        
+
       </div>
     </div>
     <div
