@@ -63,13 +63,10 @@ export class CanvaBoardComponent {
     this.drawTextWithMaxDimensions(this.designation || this.staticSubTitle, this.subTitlePositionX, this.subTitlePositionY, 20, 150);
   }
 
-  createBox(x: number, y: number, width: number, height: number) {
+
+  createBox(x: number, y: number, width: number, height: number) { x 
     this.context?.rect(x, y, width, height);
     this.context?.stroke();
-    this.img.src = "https://images.unsplash.com/photo-1600647993560-11a92e039466?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTB8fHxlbnwwfHx8fHw%3D";
-    this.img.onload = () => {
-      this.context?.drawImage(this.img, 10, 10, width, height);
-    };
   }
 
   drawTextWithMaxDimensions(text: string, x: number, y: number, size: number, maxWidth: number) {
@@ -105,6 +102,8 @@ export class CanvaBoardComponent {
     // Clear canvas
     this.context?.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
 
+    this.context?.drawImage(this.img, 10, 10, 150, 150);
+
     // Get form input values
     this.username = (document.getElementById('username') as HTMLInputElement).value;
     this.designation = (document.getElementById('designation') as HTMLInputElement).value;
@@ -128,4 +127,22 @@ export class CanvaBoardComponent {
     const canvas: HTMLCanvasElement = this.canvas.nativeElement;
     canvas.style.transform = `scale(${this.zoomFactor})`;
   }
+  handleImageUpload(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.type !== 'image/svg+xml') {
+        alert('Please select an SVG file.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.img.src = e.target.result;
+        this.img.onload = () => {
+          this.updateCanvas();
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
 }
