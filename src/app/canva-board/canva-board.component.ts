@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-canva-board',
@@ -35,6 +35,7 @@ export class CanvaBoardComponent {
     this.setupCanvas();
     this.setHeaderLayout();
   }
+
   setupCanvas() {
     const canvas = this.canvas.nativeElement;
 
@@ -42,7 +43,7 @@ export class CanvaBoardComponent {
     const mmWidth = 210;
     const mmHeight = 297;
 
-    // Scale factor (e.g., 0.9 means 90% of the original size)
+    // Scale factor (e.g., 0.6 means 60% of the original size)
     const scaleFactor = 0.6;
 
     // Adjusted canvas dimensions
@@ -63,44 +64,50 @@ export class CanvaBoardComponent {
   setHeaderLayout() {
     // Draw initial layout
     this.createBox(10, 10, 150, 150);
-    this.setText(this.username || this.staticTitle, this.titlePositionX, this.titlePositionY, 20);
-    this.setText(this.designation || this.staticSubTitle, this.subTitlePositionX, this.subTitlePositionY, 20);
+    this.drawTextWithMaxDimensions(this.username || this.staticTitle, this.titlePositionX, this.titlePositionY, 20, 150);
+    this.drawTextWithMaxDimensions(this.designation || this.staticSubTitle, this.subTitlePositionX, this.subTitlePositionY, 20, 150);
   }
 
 
-  createBox(x: number, y: number, width: number, height: number) {
+  createBox(x: number, y: number, width: number, height: number) { x 
     this.context?.rect(x, y, width, height);
     this.context?.stroke();
-    this.img.src = "https://images.unsplash.com/photo-1600647993560-11a92e039466?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTB8fHxlbnwwfHx8fHw%3D";
-
-    // Wait for the image to be fully loaded
-    this.img.onload = () => {
-      this.context?.drawImage(this.img, 10, 10, width, height);
-    };
   }
 
-  createLine(context: any, x1: number, y1: number, x2: number, y2: number) {
-    this.moveTo(context, x1, y1);
-    this.lineTo(context, x2, y2);
-    context?.stroke();
+  drawTextWithMaxDimensions(text: string, x: number, y: number, size: number, maxWidth: number) {
+    const words = text.split(' ');
+    let currentLine = '';
+    let currentY = y;
+
+    for (const word of words) {
+      const testLine = currentLine + word + ' ';
+      const metrics = this.context!.measureText(testLine);
+      const testWidth = metrics.width;
+
+      if (testWidth > maxWidth && currentLine !== '') {
+        // Start a new line
+        this.drawTextLine(currentLine, x, currentY, size);
+        currentLine = word + ' ';
+        currentY += 20; // Adjust as needed based on font size and line height
+      } else {
+        currentLine = testLine;
+      }
+    }
+
+    // Draw the last line
+    this.drawTextLine(currentLine, x, currentY, size);
   }
 
-  moveTo(context: any, x: number, y: number) {
-    context?.moveTo(x, y);
-  }
-
-  lineTo(context: any, x: number, y: number) {
-    context?.lineTo(x, y);
-  }
-
-  setText(textValue: string, x: number, y: number, size: number) {
+  drawTextLine(text: string, x: number, y: number, size: number) {
     this.context!.font = `${size}px ${this.selectedFont}`;
-    this.context?.fillText(textValue, x, y);
+    this.context?.fillText(text, x, y);
   }
 
   updateCanvas() {
     // Clear canvas
     this.context?.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+
+    this.context?.drawImage(this.img, 10, 10, 150, 150);
 
     // Get form input values
     this.username = (document.getElementById('username') as HTMLInputElement).value;
@@ -108,6 +115,9 @@ export class CanvaBoardComponent {
 
     this.setHeaderLayout();
   }
+
+  
+
   zoomIn() {
     this.zoomFactor *= 1.2;
     this.applyZoom();
@@ -135,5 +145,22 @@ export class CanvaBoardComponent {
   limitZoom() {
     this.zoomFactor = Math.max(this.minZoomFactor, Math.min(this.maxZoomFactor, this.zoomFactor));
   }
-  
+  handleImageUpload(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.type !== 'image/svg+xml') {
+        alert('Please select an SVG file.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.img.src = e.target.result;
+        this.img.onload = () => {
+          this.updateCanvas();
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
 }
