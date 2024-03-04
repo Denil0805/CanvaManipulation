@@ -87,7 +87,7 @@
           <canvas
             #canvas
             class="border rounded shadow draggable-canvas"
-            id="canvas" #zoomContainer (wheel)="handleZoom($event)"
+            id="canvas" #zoomContainer (wheel)="handleZoom($event)" (dblclick)="handleDoubleTap($event)"
             appDraggable
           ></canvas>
         </div>

@@ -142,6 +142,38 @@ export class CanvaBoardComponent {
     }
     event.preventDefault();
   }
+  zoomToPoint(event: MouseEvent) {
+    const canvas = this.canvas.nativeElement;
+    const boundingRect = canvas.getBoundingClientRect();
+    
+    // Calculate the position of the click relative to the canvas
+    const clickX = event.clientX - boundingRect.left;
+    const clickY = event.clientY - boundingRect.top;
+  
+    // Calculate the new zoom factor
+    const newZoomFactor = this.zoomFactor * 1.2;
+  
+    // Calculate the new position after zoom
+    const newX = clickX - (clickX - canvas.width / 2) * (newZoomFactor / this.zoomFactor);
+    const newY = clickY - (clickY - canvas.height / 2) * (newZoomFactor / this.zoomFactor);
+  
+    // Update the zoom factor and apply the zoom
+    this.zoomFactor = newZoomFactor;
+    this.applyZoom();
+  
+    // Set the new transformation origin
+    canvas.style.transformOrigin = `${newX}px ${newY}px`;
+  }
+  
+  handleDoubleTap(event: MouseEvent) {
+    // Prevent default double-click behavior, which may interfere with the zoomToPoint
+    event.preventDefault();
+  
+    // Check if the double click is on the canvas
+    if (event.target === this.canvas.nativeElement) {
+      this.zoomToPoint(event);
+    }
+  }
   limitZoom() {
     this.zoomFactor = Math.max(this.minZoomFactor, Math.min(this.maxZoomFactor, this.zoomFactor));
   }
