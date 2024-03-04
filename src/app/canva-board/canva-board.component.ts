@@ -22,6 +22,7 @@ export class CanvaBoardComponent {
   private minScale = 0.2;
   private maxScale = 2.0;
   private zoomSpeed = 0.1;
+  private zoomFactor = 0;
 
   selectedFont: string = "serif"; // Default font
  
@@ -69,15 +70,9 @@ export class CanvaBoardComponent {
   }
  
 
-  createBox(x: number, y: number, width: number, height: number) {
+  createBox(x: number, y: number, width: number, height: number) { x 
     this.context?.rect(x, y, width, height);
     this.context?.stroke();
-    this.img.src = "https://images.unsplash.com/photo-1600647993560-11a92e039466?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTB8fHxlbnwwfHx8fHw%3D";
-
-    // Wait for the image to be fully loaded
-    this.img.onload = () => {
-      this.context?.drawImage(this.img, 10, 10, width, height);
-    };
   }
 
   createLine(context: any, x1: number, y1: number, x2: number, y2: number) {
@@ -102,11 +97,43 @@ export class CanvaBoardComponent {
   updateCanvas() {
     // Clear canvas
     this.context?.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
-   
+    this.context?.drawImage(this.img, 10, 10, 150, 150);
+
     // Get form input values
     this.username = (document.getElementById('username') as HTMLInputElement).value;
     this.designation = (document.getElementById('designation') as HTMLInputElement).value;
  
     this.setHeaderLayout();
+  }
+  zoomIn() {
+    this.zoomFactor *= 1.2;
+    this.applyZoom();
+  }
+  
+  zoomOut() {
+    this.zoomFactor /= 1.2;
+    this.applyZoom();
+  }
+  
+  applyZoom() {
+    const canvas: HTMLCanvasElement = this.canvas.nativeElement;
+    canvas.style.transform = `scale(${this.zoomFactor})`;
+  }
+  handleImageUpload(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.type !== 'image/svg+xml') {
+        alert('Please select an SVG file.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.img.src = e.target.result;
+        this.img.onload = () => {
+          this.updateCanvas();
+        };
+      };
+      reader.readAsDataURL(file);
+    }
   }
 }
