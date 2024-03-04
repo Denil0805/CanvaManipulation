@@ -1,5 +1,4 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-
 @Component({
   selector: 'app-canva-board',
   templateUrl: './canva-board.component.html',
@@ -9,35 +8,28 @@ export class CanvaBoardComponent {
 
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   private context!: CanvasRenderingContext2D | null;
-  private titlePositionX: number = 250;
-  private titlePositionY: number = 65;
-  private subTitlePositionX: number = 250;
-  private subTitlePositionY: number = 120;
-  private staticTitle: string = "Page Title";
-  private staticSubTitle: string = "Page Sub Title";
-  private username: string = "";
-  private designation: string = "";
-  private img: HTMLImageElement = new Image();
-  private scale = 1.0;
-  private minScale = 0.2;
-  private maxScale = 2.0;
-  private zoomSpeed = 0.1;
-  private zoomFactor = 0;
-
-  selectedFont: string = "serif"; // Default font
- 
+  titlePositionX: number = 250;
+  titlePositionY: number = 65;
+  subTitlePositionX: number = 250;
+  subTitlePositionY: number = 120;
+  staticTitle: string = "Username";
+  staticSubTitle: string = "Designation";
+  username: string = "";
+  designation: string = "";
+  img: HTMLImageElement = new Image();
+  canvasWidth: number = 0;
+  canvasHeight: number = 0;
+  minScale: number = 0.8;
+  maxScale: number = 3.0;
+  scale: number = 1.0;
+  zoomFactor = 1;
+  selectedFont: string = "serif";
   fonts: string[] = ['Arial', 'Times New Roman', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'];
   ngAfterViewInit() {
     this.context = this.canvas.nativeElement.getContext("2d");
     this.setupCanvas();
     this.setHeaderLayout();
   }
-  loadCanvas() {
-    this.context?.beginPath();
-    this.context?.arc(95, 50, 40, 0, 2 * Math.PI);
-    this.context?.stroke();
-  }
-
   setupCanvas() {
     const canvas = this.canvas.nativeElement;
 
@@ -45,12 +37,12 @@ export class CanvaBoardComponent {
     const mmWidth = 210;
     const mmHeight = 297;
 
-     // Scale factor (e.g., 0.9 means 90% of the original size)
-     const scaleFactor = 0.6;
+    // Scale factor (e.g., 0.9 means 90% of the original size)
+    const scaleFactor = 0.6;
 
-     // Adjusted canvas dimensions
-     const adjustedWidth = mmWidth * scaleFactor;
-     const adjustedHeight = mmHeight * scaleFactor;
+    // Adjusted canvas dimensions
+    const adjustedWidth = mmWidth * scaleFactor;
+    const adjustedHeight = mmHeight * scaleFactor;
 
     // Convert millimeters to pixels (assuming standard 96 DPI resolution)
     const pixelsWidth = adjustedWidth * 3.7795275590551;
@@ -59,7 +51,8 @@ export class CanvaBoardComponent {
     // Set canvas dimensions in pixels
     canvas.width = pixelsWidth;
     canvas.height = pixelsHeight;
-
+    this.canvasWidth = pixelsWidth;
+    this.canvasHeight = pixelsHeight;
   }
 
   setHeaderLayout() {
@@ -68,7 +61,7 @@ export class CanvaBoardComponent {
     this.setText(this.username || this.staticTitle, this.titlePositionX, this.titlePositionY, 20);
     this.setText(this.designation || this.staticSubTitle, this.subTitlePositionX, this.subTitlePositionY, 20);
   }
- 
+
 
   createBox(x: number, y: number, width: number, height: number) { x 
     this.context?.rect(x, y, width, height);
@@ -97,12 +90,13 @@ export class CanvaBoardComponent {
   updateCanvas() {
     // Clear canvas
     this.context?.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+
     this.context?.drawImage(this.img, 10, 10, 150, 150);
 
     // Get form input values
     this.username = (document.getElementById('username') as HTMLInputElement).value;
     this.designation = (document.getElementById('designation') as HTMLInputElement).value;
- 
+
     this.setHeaderLayout();
   }
   zoomIn() {
@@ -136,4 +130,5 @@ export class CanvaBoardComponent {
       reader.readAsDataURL(file);
     }
   }
+
 }
