@@ -1,2 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~node_modules/bootstrap/dist/css/bootstrap.min.css"
+@import "~node_modules/bootstrap/dist/css/bootstrap.min.css";
+
+/* For WebKit Browsers (Chrome, Safari) */
+
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #888; /* Color of the thumb */
+        border-radius: 6px;
+    }
+
+    /* For Firefox */
+    /* Note: Firefox supports the scrollbar-width property as of version 64 */
+    /* For older versions, you may need to use the -moz-scrollbar property */
+    .scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #888 transparent; 
+    }
+
+    .scrollbar-thumb {
+        background-color: #888; /* Color of the thumb */
+        border-radius: 6px;
+    }
+
+    .ms-scrollbar {
+        width: 5px;
+        scrollbar-color: #888 transparent; /* Color of the thumb and track */
+    }
+    
+    .ms-scrollbar-thumb {
+        background-color: #888; /* Color of the thumb */
+    }
