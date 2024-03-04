@@ -28,6 +28,7 @@ export class CanvaBoardComponent {
   minZoomFactor: number = 0.2;
   maxZoomFactor: number = 2.0;
   zoomSpeed: number = 0.1;
+  uploadedImageName : string = "No File Chosen"
   selectedFont: string = "serif";
   fonts: string[] = ['Arial', 'Times New Roman', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'];
   ngAfterViewInit() {
@@ -188,6 +189,7 @@ export class CanvaBoardComponent {
       reader.onload = (e: any) => {
         this.img.src = e.target.result;
         this.img.onload = () => {
+          this.uploadedImageName = file.name; // Display the name of the uploaded image
           this.updateCanvas();
         };
       };
