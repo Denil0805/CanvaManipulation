@@ -18,6 +18,7 @@ export class CanvaBoardComponent {
   private username: string = "";
   private designation: string = "";
   private img: HTMLImageElement = new Image();
+  uploadedImageName: string = "No file chosen";
   private scale = 1.0;
   private minScale = 0.2;
   private maxScale = 2.0;
@@ -130,6 +131,7 @@ export class CanvaBoardComponent {
       reader.onload = (e: any) => {
         this.img.src = e.target.result;
         this.img.onload = () => {
+          this.uploadedImageName = file.name; // Display the name of the uploaded image
           this.updateCanvas();
         };
       };
