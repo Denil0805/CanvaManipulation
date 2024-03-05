@@ -28,7 +28,7 @@ export class CanvaBoardComponent {
   minZoomFactor: number = 0.2;
   maxZoomFactor: number = 2.0;
   zoomSpeed: number = 0.1;
-  uploadedImageName : string = "No File Chosen"
+  uploadedImageName : string = "No File Chosen";
   selectedFont: string = "serif";
   fonts: string[] = ['Arial', 'Times New Roman', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'];
   ngAfterViewInit() {
